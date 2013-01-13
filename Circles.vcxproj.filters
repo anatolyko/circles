@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\game.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\game.h" />
+    <ClInclude Include="src\math\circle.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\math\point.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\math\color.h">
+      <Filter>math</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="math">
+      <UniqueIdentifier>{30ab4815-9ff5-4879-91e4-40a0ee26c1c2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
