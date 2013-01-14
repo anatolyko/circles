@@ -1,6 +1,6 @@
 #include "game.h"
 
-// these needed for srand
+// these required for srand
 #include <time.h>
 #include <stdlib.h>
 
@@ -9,10 +9,10 @@
 // ideally these should be loaded from config
 const size_t CircleGenerationSpeed = 1; // units per second
 
-const double CircleMinimumRadius = 20.0; // GL coordinate space
+const double CircleMinimumRadius = 20.0; // game coordinate space (here its the same as window space)
 const double CircleMaximumRadius = 60.0; 
 
-const double CircleMinimumSpeed = 2.0; // GL coordinate space
+const double CircleMinimumSpeed = 2.0; // game coordinate space (here its the same as window space)
 const double CircleMaximumSpeed = 6.0; 
 
 const size_t CircleMinimumScore = 10; 
@@ -20,7 +20,7 @@ const size_t CircleMaximumScore = 100;
 
 
 Game::Game()
-	: viewport_width_(0.0), viewport_height_(0.0), overall_score_(0)
+	: viewport_width(0.0), viewport_height(0.0), overall_score(0)
 {
 }
 
@@ -39,28 +39,27 @@ bool Game::init()
 
 bool Game::cleanup()
 {
-	circles_.clear();
+	circles.clear();
 
 	return true;
 }
 
 void Game::adjust_viewport_size(size_t width, size_t height)
 {
-	viewport_width_ = width;
-	viewport_height_ = height;
+	viewport_width = width;
+	viewport_height = height;
 }
 
 void Game::update(double time_elapsed)
 {
 	// update existing units
-	game_circle_list::iterator it = circles_.begin();
-	for(;it != circles_.end();++it)
+	for(game_circle_list::iterator it = circles.begin(); it != circles.end(); ++it)
 	{
 		it->pos += it->speed;
 	}
 
-	// check for a deadline (screen border)
-	circles_.remove_if(Game::is_outside_window);
+	// check for a deadline (screen border) and kill these unlucky
+	circles.remove_if(Game::is_outside_window);
 
 	// spawn some new ones
 	generate_circles(time_elapsed);
@@ -68,12 +67,12 @@ void Game::update(double time_elapsed)
 
 bool Game::is_outside_window(const circle_type& circle)
 {
-	return circle.pos.y + circle.radius > instance().viewport_height();
+	return circle.pos.y + circle.radius > instance().get_viewport_height();
 }
 
 void Game::generate_circles(double time_elapsed)
 {
-	static const double TimeToSpawn = 1.0 / CircleGenerationSpeed; // time needed to spawn one unit
+	static const double TimeToSpawn = 1.0 / CircleGenerationSpeed; // time reqired to spawn one unit
 	static double accumulated_time = 0.0; // leftovers of time from previous cicles
 
 	accumulated_time += time_elapsed;
@@ -94,16 +93,16 @@ void Game::generate_circles(double time_elapsed)
 
 		// set position
 		double position_aspect = static_cast<double>(rand()) / RAND_MAX;
-		circle.pos.x = position_aspect * (viewport_width_ - circle.radius * 2) + circle.radius; // whole circle should be inside viewport
+		circle.pos.x = position_aspect * (viewport_width - circle.radius * 2) + circle.radius; // whole circle should be inside viewport
 		circle.pos.y = circle.radius;
 
 		// set color 
 		double blue_color_aspect = static_cast<double>(rand()) / RAND_MAX;
 		circle.color.reset(size_aspect, position_aspect, blue_color_aspect);
 
-		// by value
-		// 
-		circles_.push_back(circle);
+		// by value - plain and simple
+		// it could be done via auto_ptr if the need arises to optimize one copy operation
+		circles.push_back(circle);
 	}
 }
 
@@ -113,16 +112,16 @@ void Game::handle_mouse_click(double x, double y)
 
 	// lets find topmost circle under mouse pointer
 	// counting is in reverse order due to painting order
-	game_circle_list::reverse_iterator rit = circles_.rbegin();
-	for(;rit != circles_.rend(); ++rit)
+	game_circle_list::reverse_iterator rit = circles.rbegin();
+	for(;rit != circles.rend(); ++rit)
 	{
 		if(rit->is_inside(pt)) 
 		{
 			// increase score
-			overall_score_ += rit->score;
+			overall_score += rit->score;
 
 			// kill it
-			circles_.erase(--rit.base());
+			circles.erase(--rit.base());
 			break;
 		}
 	}

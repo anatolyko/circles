@@ -47,12 +47,12 @@ public:
 	void handle_mouse_click(double x, double y);
 
 	// getters
-	const game_circle_list& circles() const { return circles_; }
-	size_t get_overall_score() const { return overall_score_; }
+	const game_circle_list& get_circles() const { return circles; }
+	size_t get_overall_score() const { return overall_score; }
 
 	// getters for predicate for remove_if 
-	double viewport_width() const { return viewport_width_; }
-	double viewport_height() const { return viewport_height_; }
+	double get_viewport_width() const { return viewport_width; }
+	double get_viewport_height() const { return viewport_height; }
 
 	// predicate for remove_if
 	static bool is_outside_window(const circle_type& circle);
@@ -66,15 +66,15 @@ public:
 
 private: 	
 	// private data
-	game_circle_list circles_;
+	game_circle_list circles;
 
-	double viewport_width_;
-	double viewport_height_;
+	double viewport_width;
+	double viewport_height;
 
 	// private methods
 	void generate_circles(double time_elapsed);
 
-	size_t overall_score_;
+	size_t overall_score;
 
 private:
 	// make it non-copyable (its a singleton)	

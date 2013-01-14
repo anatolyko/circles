@@ -5,20 +5,20 @@
 
 #include "game.h"
 
-/*
-*	Application entry point is here.
-* Platform-dependent and OpenGL-dependent things are also here. 
-*/
+
+// Application entry point is here.
+// Platform-dependent and OpenGL-dependent things are also here. 
+
 
 // default window width & height
 static const DWORD DefaultWindowWidth = 800;
 static const DWORD DefaultWindowHeight = 600;
 
 // globals
-HWND    hWnd;
-HDC     hDC;
-HGLRC   hRC;
-bool Paused = false;
+HWND	hWnd = NULL;
+HDC		hDC = NULL;
+HGLRC	hRC = NULL;
+bool	Paused = false;
 
 // Set up pixel format for graphics initialization
 void SetupPixelFormat()
@@ -27,16 +27,14 @@ void SetupPixelFormat()
 	int pixelformat;
 
 	ppfd = &pfd;
+  memset(&pfd, 0, sizeof(pfd));
 
-	ppfd->nSize = sizeof(PIXELFORMATDESCRIPTOR);
+	ppfd->nSize = sizeof(pfd);
 	ppfd->nVersion = 1;
 	ppfd->dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
 	ppfd->dwLayerMask = PFD_MAIN_PLANE;
-	ppfd->iPixelType = PFD_TYPE_COLORINDEX;
+	ppfd->iPixelType = PFD_TYPE_RGBA;
 	ppfd->cColorBits = 24;
-	ppfd->cDepthBits = 0;
-	ppfd->cAccumBits = 0;
-	ppfd->cStencilBits = 0;
 
 	pixelformat = ChoosePixelFormat(hDC, ppfd);
 	SetPixelFormat(hDC, pixelformat, ppfd);
@@ -53,8 +51,6 @@ void InitOpenGL()
 	wglMakeCurrent(hDC, hRC);
 
 	glClearColor(0, 0, 0, 0.5);
-	glClearDepth(1.0);
-	glEnable(GL_DEPTH_TEST);
 
 	// create bitmaps for the device context font's first 256 glyphs  
 	wglUseFontBitmaps(hDC, 0, 256, 1000); 
@@ -119,11 +115,11 @@ void DrawScore()
 	glColor3d(1.0, 1.0, 1.0);
 
 	// bottom-left corner
-	glRasterPos2d(10.0, Game::instance().viewport_height() - 10); 
+	glRasterPos2d(10.0, Game::instance().get_viewport_height() - 10); 
  
 	// convert score to string 
 	char score_str[100];
-	int length = _snprintf(score_str, 100, "Score: %i", Game::instance().get_overall_score());
+	int length = _snprintf_s(score_str, 100, "Score: %i", Game::instance().get_overall_score());
  
 	// set up for a string-drawing display list call  
 	glListBase(1000); 
@@ -136,10 +132,10 @@ void DrawScore()
 void DrawGraphics()
 {
 	// clean up
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// draw circles
-	const game_circle_list& circles = Game::instance().circles();
+	const game_circle_list& circles = Game::instance().get_circles();
 	for(game_circle_list::const_iterator it = circles.begin();it != circles.end(); ++it)	
 	{
 		DrawCircle((*it));
@@ -203,7 +199,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	wndclass.cbClsExtra    = 0;
 	wndclass.cbWndExtra    = 0;
 	wndclass.hInstance     = hInstance;
-	wndclass.hIcon         = 0;
+	wndclass.hIcon         = LoadIcon(hInstance, MAKEINTRESOURCE(101));
 	wndclass.hCursor       = LoadCursor(NULL,IDC_ARROW);
 	wndclass.hbrBackground = (HBRUSH)(COLOR_WINDOW+1);
 	wndclass.lpszMenuName  = appname;
@@ -256,9 +252,8 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		DWORD m_end = GetTickCount();
 		if(!Paused) 
 		{
-			double time_elapsed = static_cast<double>(m_end - m_start) / 1000.0; // convert to seconds
-
 			// update game 
+			double time_elapsed = static_cast<double>(m_end - m_start) / 1000.0; // convert to seconds
 			Game::instance().update(time_elapsed); 
 		}
 		m_start = m_end;
