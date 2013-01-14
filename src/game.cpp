@@ -20,7 +20,7 @@ const size_t CircleMaximumScore = 100;
 
 
 Game::Game()
-	: viewport_width(0.0), viewport_height(0.0), overall_score(0)
+: viewport_width(0.0), viewport_height(0.0), overall_score(0)
 {
 }
 

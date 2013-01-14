@@ -16,7 +16,7 @@ static const DWORD DefaultWindowHeight = 600;
 
 // globals
 HWND	hWnd = NULL;
-HDC		hDC = NULL;
+HDC	hDC = NULL;
 HGLRC	hRC = NULL;
 bool	Paused = false;
 
@@ -27,7 +27,7 @@ void SetupPixelFormat()
 	int pixelformat;
 
 	ppfd = &pfd;
-  memset(&pfd, 0, sizeof(pfd));
+	memset(&pfd, 0, sizeof(pfd));
 
 	ppfd->nSize = sizeof(pfd);
 	ppfd->nVersion = 1;
@@ -101,7 +101,7 @@ void DrawCircle(const GameCircle& circle)
 
 	// draw
 	glPushMatrix();		
-  glTranslated(circle.pos.x, circle.pos.y, 0);
+	glTranslated(circle.pos.x, circle.pos.y, 0);
 	gluDisk(state, 0, circle.radius, 32, 32);
 	glPopMatrix();		
 
@@ -144,8 +144,8 @@ void DrawGraphics()
 	// draw overall score
 	DrawScore();
 
-  // Show the new scene
-  SwapBuffers(hDC);
+	// Show the new scene
+	SwapBuffers(hDC);
 }
 
 // Handle window events and messages
@@ -262,7 +262,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		DrawGraphics();
 
 		// sleep a bit
-		Sleep(20);
+		Sleep(10);
 	}
 
 	// clean up 
