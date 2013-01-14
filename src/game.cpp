@@ -12,8 +12,8 @@ const size_t CircleGenerationSpeed = 1; // units per second
 const double CircleMinimumRadius = 20.0; // game coordinate space (here its the same as window space)
 const double CircleMaximumRadius = 60.0; 
 
-const double CircleMinimumSpeed = 2.0; // game coordinate space (here its the same as window space)
-const double CircleMaximumSpeed = 6.0; 
+const double CircleMinimumSpeed = 100.0; // game coordinate space (here its the same as window space)
+const double CircleMaximumSpeed = 300.0; 
 
 const size_t CircleMinimumScore = 10; 
 const size_t CircleMaximumScore = 100; 
@@ -55,7 +55,7 @@ void Game::update(double time_elapsed)
 	// update existing units
 	for(game_circle_list::iterator it = circles.begin(); it != circles.end(); ++it)
 	{
-		it->pos += it->speed;
+		it->pos += it->speed * time_elapsed;
 	}
 
 	// check for a deadline (screen border) and kill these unlucky

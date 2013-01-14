@@ -262,7 +262,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		DrawGraphics();
 
 		// sleep a bit
-		Sleep(10);
+		Sleep(20);
 	}
 
 	// clean up 
